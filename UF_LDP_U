@@ -1,0 +1,36 @@
+TYPE "LDP_UF_type"
+VERSION : 0.1
+   STRUCT
+      source : Bool;
+      pulse : Bool;
+   END_STRUCT;
+
+END_TYPE
+
+FUNCTION_BLOCK "UF_LDP_U"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_IN_OUT 
+      iq : "LDP_UF_type";
+   END_VAR
+
+   VAR 
+      self {OriginalPartName := 'R_TRIG_1500'; LibVersion := '1.0'} : R_TRIG;
+   END_VAR
+
+
+BEGIN
+	
+	REGION __readme__
+	    // a function to detect the down edge
+	END_REGION
+	
+	
+	REGION __main__
+	    #self(CLK := #iq.source,
+	          Q => #iq.pulse);
+	    
+	END_REGION
+	
+END_FUNCTION_BLOCK
+
