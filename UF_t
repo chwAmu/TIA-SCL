@@ -1,0 +1,53 @@
+TYPE "t"
+VERSION : 0.1
+   STRUCT
+      in : Bool;
+      q : Bool;
+      pt : Time;
+      et : Time;
+   END_STRUCT;
+
+END_TYPE
+
+TYPE "t_d"
+VERSION : 0.1
+   STRUCT
+      tpas : "t";
+      t {OriginalPartName := 'IEC_TIMER'; LibVersion := '1.0'} : TON_TIME;
+   END_STRUCT;
+
+END_TYPE
+
+FUNCTION "UF_t" : Void
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_IN_OUT 
+      toper : Array[*] of "t_d";
+   END_VAR
+
+   VAR_TEMP 
+      _upper : DInt;
+      _i : DInt;
+   END_VAR
+
+
+BEGIN
+	
+	#_upper := UPPER_BOUND(ARR := #toper, DIM := 1);
+	
+	
+	FOR #_i := 0 TO #_upper DO
+	    
+	    #toper[#_i].t(
+	            IN:=#toper[#_i].tpas.in,
+	            PT:=#toper[#_i].tpas.pt,
+	            Q=>#toper[#_i].tpas.q,
+	            ET=>#toper[#_i].tpas.et
+	    );
+	    
+	    ;
+	END_FOR;
+	
+	
+END_FUNCTION
+
