@@ -1,0 +1,31 @@
+FUNCTION "UF_Ito8B" : Void
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      ChNo : Int;
+   END_VAR
+
+   VAR_OUTPUT 
+      PNS1 : Bool;
+      PNS2 : Bool;
+      PNS3 : Bool;
+      PNS4 : Bool;
+      PNS5 : Bool;
+      PNS6 : Bool;
+      PNS7 : Bool;
+      PNS8 : Bool;
+   END_VAR
+
+
+BEGIN
+	#PNS1 := #ChNo.%X0;
+	#PNS2 := #ChNo.%X1;
+	#PNS3 := #ChNo.%X2;
+	#PNS4 := #ChNo.%X3;
+	#PNS5 := #ChNo.%X4;
+	#PNS6 := #ChNo.%X5;
+	#PNS7 := #ChNo.%X6;
+	#PNS8 := #ChNo.%X7;
+	
+END_FUNCTION
+
