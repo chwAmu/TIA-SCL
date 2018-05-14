@@ -1,0 +1,27 @@
+FUNCTION "UF_BtoI" : USInt
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      b0 : Bool;
+      b1 : Bool;
+      b2 : Bool;
+      b3 : Bool;
+      b4 : Bool;
+      b5 : Bool;
+      b6 : Bool;
+      b7 : Bool;
+   END_VAR
+
+
+BEGIN
+	
+	#UF_BtoI.%X0 := #b0;
+	#UF_BtoI.%X1 := #b1;
+	#UF_BtoI.%X2 := #b2;
+	#UF_BtoI.%X3 := #b3;
+	#UF_BtoI.%X4 := #b4;
+	#UF_BtoI.%X5 := #b5;
+	#UF_BtoI.%X6 := #b6;
+	#UF_BtoI.%X7 := #b7;
+END_FUNCTION
+
