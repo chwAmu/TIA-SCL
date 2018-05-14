@@ -1,0 +1,118 @@
+TYPE "LDP_UF_type"
+VERSION : 0.1
+   STRUCT
+      source : Bool;
+      pulse : Bool;
+   END_STRUCT;
+
+END_TYPE
+
+TYPE "t"
+VERSION : 0.1
+   STRUCT
+      in : Bool;
+      q : Bool;
+      pt : Time;
+      et : Time;
+   END_STRUCT;
+
+END_TYPE
+
+FUNCTION_BLOCK "UF_LDP_U"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_IN_OUT 
+      iq : "LDP_UF_type";
+   END_VAR
+
+   VAR 
+      self {OriginalPartName := 'R_TRIG_1500'; LibVersion := '1.0'} : R_TRIG;
+   END_VAR
+
+
+BEGIN
+	
+	REGION __readme__
+	    // a function to detect the down edge
+	END_REGION
+	
+	
+	REGION __main__
+	    #self(CLK := #iq.source,
+	          Q => #iq.pulse);
+	    
+	END_REGION
+	
+END_FUNCTION_BLOCK
+
+TYPE "LDP_W_U_type"
+VERSION : 0.1
+   STRUCT
+      i : "LDP_UF_type";
+      pt : Time;
+   END_STRUCT;
+
+END_TYPE
+
+FUNCTION_BLOCK "UF_LDP_W_U"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_IN_OUT 
+      self : "LDP_W_U_type";
+   END_VAR
+
+   VAR 
+      pulseON { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : Bool;
+      t {OriginalPartName := 'IEC_TIMER'; LibVersion := '1.0'; ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : TON_TIME;
+      tpas { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "t";
+      iq { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "LDP_UF_type";
+      LDP_U_Instance { ExternalAccessible := 'False'; ExternalVisible := 'False'; ExternalWritable := 'False'} : "UF_LDP_U";
+   END_VAR
+
+
+BEGIN
+	
+	REGION __readme__
+	    //detect a up edge AND on as x seconds
+	END_REGION
+	
+	REGION __init__
+	    #iq.source := #self.i.source;
+	    #tpas.pt := #self.pt;
+	    #LDP_U_Instance(#iq);
+	END_REGION
+	
+	REGION __main__
+	    
+	    IF #iq.pulse THEN
+	        #tpas.in := True;
+	        #pulseON := true;
+	    END_IF;
+	    
+	    
+	    IF #pulseON THEN
+	        #self.i.pulse := True;
+	    END_IF;
+	    
+	    IF #tpas.q THEN
+	        #self.i.pulse := False;
+	        #tpas.in := False;
+	        #self.i.pulse := false;
+	        #pulseON := false;
+	    END_IF;
+	    
+	END_REGION
+	
+	REGION def_timer
+	    #t(IN := #tpas.in,
+	       PT := #tpas.pt,
+	       Q => #tpas.q,
+	       ET => #tpas.et);
+	END_REGION
+	
+	
+	
+	
+	
+END_FUNCTION_BLOCK
+
